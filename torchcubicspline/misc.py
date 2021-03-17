@@ -42,6 +42,14 @@ def tridiagonal_solve(b, A_upper, A_diagonal, A_lower):
 
     # This implementation is very much written for clarity rather than speed.
 
+    b_flat = b[None, :] if len(b.shape) == 1 else b.flatten(end_dim=-2)
+    A = (
+        A_diagonal.cpu().diag_embed()
+        + A_upper.cpu().diag_embed(offset=1)
+        + A_lower.cpu().diag_embed(offset=-1)
+    )
+    return torch.solve(b_flat.t().cpu(), A)[0].to(b.device).t().view_as(b)
+
     A_upper, _ = torch.broadcast_tensors(A_upper, b[..., :-1])
     A_lower, _ = torch.broadcast_tensors(A_lower, b[..., :-1])
     A_diagonal, b = torch.broadcast_tensors(A_diagonal, b)
