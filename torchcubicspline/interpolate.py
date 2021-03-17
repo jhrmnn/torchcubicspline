@@ -214,7 +214,7 @@ def natural_cubic_spline_coeffs(t, x):
 
         See also the accompanying example.py.
     """
-    _validate_input(t, x)
+    # _validate_input(t, x)
 
     if torch.isnan(x).any():
         # Transpose because channels are a batch dimension for the purpose of finding interpolating polynomials.
